@@ -2,10 +2,10 @@ import br.com.lache.CadastrarCliente;
 import br.com.lache.Cliente;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CadastrarClienteTest {
+
     private final CadastrarCliente service = new CadastrarCliente();
 
     @Test
@@ -22,7 +22,14 @@ public class CadastrarClienteTest {
         Exception ex = assertThrows(IllegalArgumentException.class, () ->
                 service.cadastrarCliente("", 25, "teste@teste.com")
         );
+        assertEquals("Nome não pode ser vazio", ex.getMessage());
+    }
 
+    @Test
+    void deveLancarErroQuandoNomeNulo() {
+        Exception ex = assertThrows(IllegalArgumentException.class, () ->
+                service.cadastrarCliente(null, 25, "teste@teste.com")
+        );
         assertEquals("Nome não pode ser vazio", ex.getMessage());
     }
 
@@ -31,7 +38,6 @@ public class CadastrarClienteTest {
         Exception ex = assertThrows(IllegalArgumentException.class, () ->
                 service.cadastrarCliente("André", 18, "teste@teste.com")
         );
-
         assertEquals("Idade deve ser maior que 18", ex.getMessage());
     }
 
@@ -40,8 +46,30 @@ public class CadastrarClienteTest {
         Exception ex = assertThrows(IllegalArgumentException.class, () ->
                 service.cadastrarCliente("André", 25, "email_invalido")
         );
-
         assertEquals("E-mail inválido", ex.getMessage());
     }
 
+    @Test
+    void deveLancarErroQuandoEmailNulo() {
+        Exception ex = assertThrows(IllegalArgumentException.class, () ->
+                service.cadastrarCliente("André", 25, null)
+        );
+        assertEquals("E-mail inválido", ex.getMessage());
+    }
+
+    @Test
+    void deveLancarErroQuandoEmailSemArroba() {
+        Exception ex = assertThrows(IllegalArgumentException.class, () ->
+                service.cadastrarCliente("André", 25, "email.teste.com")
+        );
+        assertEquals("E-mail inválido", ex.getMessage());
+    }
+
+    @Test
+    void deveLancarErroQuandoEmailSemPonto() {
+        Exception ex = assertThrows(IllegalArgumentException.class, () ->
+                service.cadastrarCliente("André", 25, "email@teste")
+        );
+        assertEquals("E-mail inválido", ex.getMessage());
+    }
 }
